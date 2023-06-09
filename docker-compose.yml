@@ -1,0 +1,246 @@
+version: '3.9'
+
+configs:
+  nginx_conf:
+    file: ./nginx/nginx.conf
+
+  cloudflare_logs_conf:
+    file: ./nginx/cloudflare-logs.conf
+
+  frontend_env:
+    file: ./frontend.env
+
+networks:
+  default:
+
+volumes:
+  db:
+  redis:
+  rabbitmq:
+  static:
+  media:
+  nginx_logs:
+
+services:
+  db:
+    image: postgres:latest
+    volumes:
+      - type: volume
+        source: db
+        target: /var/lib/postgresql/data
+    networks:
+      - default
+    env_file:
+      - ./backend.env
+
+  redis:
+    image: redis:alpine
+    networks:
+      - default
+
+  rabbitmq:
+    image: rabbitmq:3-management
+
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=password
+    volumes:
+      - type: volume
+        source: rabbitmq
+        target: /var/lib/rabbitmq
+    networks:
+      - default
+    ports:
+      - 15672:15672 # Web UI
+
+  frontend:
+    image: kyc_fe
+    environment:
+      - NODE_ENV=production
+    configs:
+      - source: frontend_env
+        target: /app/.env.production.local
+    entrypoint: yarn start
+    volumes:
+      - type: volume
+        source: media
+        target: /app/public/media
+    networks:
+      - default  
+
+  backend:
+    image: kyc_be
+    env_file:
+      - backend.env
+    volumes:
+      - type: volume
+        source: static
+        target: /app/static
+      - type: volume
+        source: media
+        target: /app/media
+
+    entrypoint: /app/scripts/entrypoint.dev.sh
+    depends_on:
+      - redis
+      - rabbitmq
+      - db
+    networks:
+      - default
+
+  celery-worker:
+    image: kyc_be
+    env_file:
+      - backend.env
+    volumes:
+      - type: volume
+        source: static
+        target: /app/static
+      - type: volume
+        source: media
+        target: /app/media
+
+    entrypoint: /app/scripts/celery-worker.sh
+
+    depends_on:
+      - backend
+
+    networks:
+      - default
+
+  celery-beat:
+    image: kyc_be
+
+    env_file:
+      - backend.env
+    volumes:
+      - type: volume
+        source: static
+        target: /app/static
+      - type: volume
+        source: media
+        target: /app/media
+
+    entrypoint: /app/scripts/celery-beat.sh
+
+    depends_on:
+      - backend
+
+    networks:
+      - default
+
+  celery-flower:
+    image: kyc_be
+    env_file:
+      - backend.env
+    ports:
+      - 5545:5555
+
+    volumes:
+      - type: volume
+        source: static
+        target: /app/static
+      - type: volume
+        source: media
+        target: /app/media
+
+    entrypoint: /app/scripts/celery-flower.sh
+
+    depends_on:
+      - celery-worker
+
+    networks:
+      - default
+
+  ocr:
+    image: kyc_ocr
+    env_file:
+      - ocr.env
+    ports:
+      - 7000:8000
+    volumes:
+      - type: volume
+        source: media
+        target: /app/media
+    entrypoint: /app/scripts/entrypoint.sh
+    depends_on:
+      - redis
+      - rabbitmq
+      - db
+    networks:
+      - default
+
+  ocr-celery-worker:
+    image: kyc_ocr
+    env_file:
+      - ocr.env
+    volumes:
+      - type: volume
+        source: media
+        target: /app/media
+    command: celery -A project worker -l info -Ofair 
+    
+
+    depends_on:
+      - ocr
+    networks:
+      - default
+
+  ocr-celery-beat:
+    image: kyc_ocr
+    env_file:
+      - ocr.env
+    volumes:
+      - type: volume
+        source: media
+        target: /app/media
+    entrypoint: /app/scripts/celery-beat.sh
+    depends_on:
+      - ocr
+    networks:
+      - default
+
+  ocr-celery-flower:
+    image: kyc_ocr
+    env_file:
+      - ocr.env
+    volumes:
+      - type: volume
+        source: media
+        target: /app/media
+    ports:
+      - 5546:5555
+    entrypoint: /app/scripts/celery-flower.sh
+    depends_on:
+      - ocr-celery-worker
+    networks:
+      - default
+
+  kycport-dev-proxy:
+    image: nginx:latest
+    volumes:
+      - type: volume
+        source: nginx_logs
+        target: /var/log/nginx
+      - type: volume
+        source: static
+        target: /var/www/html/static
+      - type: volume
+        source: media
+        target: /var/www/html/media
+
+    configs:
+      - source: nginx_conf
+        target: /etc/nginx/nginx.conf
+
+      - source: cloudflare_logs_conf
+        target: /etc/nginx/cloudflare-logs.conf
+    ports:
+      - 80:80
+    depends_on:
+      - backend
+      - frontend
+
+    networks:
+      - default
+
