@@ -30,8 +30,13 @@ services:
         target: /var/lib/postgresql/data
     networks:
       - default
-    env_file:
-      - ./backend.env
+    environment:
+      - POSTGRES_DB=db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - DB_HOST=db
+      - DB_PORT=5432
+      
 
   redis:
     image: redis:alpine
@@ -70,8 +75,28 @@ services:
 
   backend:
     image: kyc_be
-    env_file:
-      - backend.env
+    environment:
+      - SECRET_KEY=nh_zk9@rql9nsjo41n1z5(%%oe_(marz$*ze#pw&2e-dor2%nt
+      - DEBUG=True
+      - CELERY_BROKER_URL=amqp://user:password@rabbitmq:5672/be
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - REDIS_CACHE_URL=redis://redis:6379/1
+      - POSTGRES_DB=db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - DB_HOST=db
+      - DB_PORT=5432
+      - EMAIL_HOST=mail.sidramail.com
+      - EMAIL_PORT=587
+      - EMAIL_FROM=noreply@kycport.com
+      - EMAIL_USER=noreply@kycport.com
+      - EMAIL_PASSWORD=kvk@1234gyu
+      - TURNSTILE_SITE_KEY=0x4AAAAAAAC5YHB57lGHydXb
+      - TURNSTILE_SECRET_KEY=0x4AAAAAAAC5YEVS87JdZtNreR865Ucl8Zw
+      - JWT_SECRET=MC4CAQAwBQYDK2VwBCIEICSK61TR/2IsEtVNYJzcY3578mjg7y7OY2osGshdfsg
+      - LOYALTINUM_API_KEY=0x4AAAAAAAC5YHB57lGHydXb
+      - SITE_URL=http://localhost
+      - OCR_KEY=fea6c5af2a8441d54adf79bf9a21ca1a
     volumes:
       - type: volume
         source: static
@@ -90,8 +115,28 @@ services:
 
   celery-worker:
     image: kyc_be
-    env_file:
-      - backend.env
+    environment:
+      - SECRET_KEY=nh_zk9@rql9nsjo41n1z5(%%oe_(marz$*ze#pw&2e-dor2%nt
+      - DEBUG=True
+      - CELERY_BROKER_URL=amqp://user:password@rabbitmq:5672/be
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - REDIS_CACHE_URL=redis://redis:6379/1
+      - POSTGRES_DB=db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - DB_HOST=db
+      - DB_PORT=5432
+      - EMAIL_HOST=mail.sidramail.com
+      - EMAIL_PORT=587
+      - EMAIL_FROM=noreply@kycport.com
+      - EMAIL_USER=noreply@kycport.com
+      - EMAIL_PASSWORD=kvk@1234gyu
+      - TURNSTILE_SITE_KEY=0x4AAAAAAAC5YHB57lGHydXb
+      - TURNSTILE_SECRET_KEY=0x4AAAAAAAC5YEVS87JdZtNreR865Ucl8Zw
+      - JWT_SECRET=MC4CAQAwBQYDK2VwBCIEICSK61TR/2IsEtVNYJzcY3578mjg7y7OY2osGshdfsg
+      - LOYALTINUM_API_KEY=0x4AAAAAAAC5YHB57lGHydXb
+      - SITE_URL=http://localhost
+      - OCR_KEY=fea6c5af2a8441d54adf79bf9a21ca1a
     volumes:
       - type: volume
         source: static
@@ -111,8 +156,28 @@ services:
   celery-beat:
     image: kyc_be
 
-    env_file:
-      - backend.env
+    environment:
+      - SECRET_KEY=nh_zk9@rql9nsjo41n1z5(%%oe_(marz$*ze#pw&2e-dor2%nt
+      - DEBUG=True
+      - CELERY_BROKER_URL=amqp://user:password@rabbitmq:5672/be
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - REDIS_CACHE_URL=redis://redis:6379/1
+      - POSTGRES_DB=db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - DB_HOST=db
+      - DB_PORT=5432
+      - EMAIL_HOST=mail.sidramail.com
+      - EMAIL_PORT=587
+      - EMAIL_FROM=noreply@kycport.com
+      - EMAIL_USER=noreply@kycport.com
+      - EMAIL_PASSWORD=kvk@1234gyu
+      - TURNSTILE_SITE_KEY=0x4AAAAAAAC5YHB57lGHydXb
+      - TURNSTILE_SECRET_KEY=0x4AAAAAAAC5YEVS87JdZtNreR865Ucl8Zw
+      - JWT_SECRET=MC4CAQAwBQYDK2VwBCIEICSK61TR/2IsEtVNYJzcY3578mjg7y7OY2osGshdfsg
+      - LOYALTINUM_API_KEY=0x4AAAAAAAC5YHB57lGHydXb
+      - SITE_URL=http://localhost
+      - OCR_KEY=fea6c5af2a8441d54adf79bf9a21ca1a
     volumes:
       - type: volume
         source: static
@@ -131,8 +196,28 @@ services:
 
   celery-flower:
     image: kyc_be
-    env_file:
-      - backend.env
+    environment:
+      - SECRET_KEY=nh_zk9@rql9nsjo41n1z5(%%oe_(marz$*ze#pw&2e-dor2%nt
+      - DEBUG=True
+      - CELERY_BROKER_URL=amqp://user:password@rabbitmq:5672/be
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - REDIS_CACHE_URL=redis://redis:6379/1
+      - POSTGRES_DB=db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - DB_HOST=db
+      - DB_PORT=5432
+      - EMAIL_HOST=mail.sidramail.com
+      - EMAIL_PORT=587
+      - EMAIL_FROM=noreply@kycport.com
+      - EMAIL_USER=noreply@kycport.com
+      - EMAIL_PASSWORD=kvk@1234gyu
+      - TURNSTILE_SITE_KEY=0x4AAAAAAAC5YHB57lGHydXb
+      - TURNSTILE_SECRET_KEY=0x4AAAAAAAC5YEVS87JdZtNreR865Ucl8Zw
+      - JWT_SECRET=MC4CAQAwBQYDK2VwBCIEICSK61TR/2IsEtVNYJzcY3578mjg7y7OY2osGshdfsg
+      - LOYALTINUM_API_KEY=0x4AAAAAAAC5YHB57lGHydXb
+      - SITE_URL=http://localhost
+      - OCR_KEY=fea6c5af2a8441d54adf79bf9a21ca1a
     ports:
       - 5545:5555
 
@@ -154,8 +239,24 @@ services:
 
   ocr:
     image: kyc_ocr
-    env_file:
-      - ocr.env
+    environment:
+      - SECRET_KEY=nh_zk9@rql9nsjo41n1z5(%%oe_(marz$*ze#pw&2e-dor2%nt
+      - DEBUG=True
+      - CELERY_BROKER_URL=amqp://user:password@rabbitmq:5672/ocr
+      - CELERY_RESULT_BACKEND=redis://redis:6379/5
+      - REDIS_CACHE_URL=redis://redis:6379/4
+      - POSTGRES_DB=db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - DB_HOST=db
+      - DB_PORT=5432
+      - EMAIL_HOST=mail.sidramail.com
+      - EMAIL_PORT=587
+      - EMAIL_FROM=noreply@kycport.com
+      - EMAIL_USER=noreply@kycport.com
+      - EMAIL_PASSWORD=kvk@1234ldsgki
+      - SITE_URL=http://localhost
+      - OCR_KEY=fea6c5af2a8441d54adf79bf9a21ca1a
     ports:
       - 7000:8000
     volumes:
@@ -172,8 +273,24 @@ services:
 
   ocr-celery-worker:
     image: kyc_ocr
-    env_file:
-      - ocr.env
+    environment:
+      - SECRET_KEY=nh_zk9@rql9nsjo41n1z5(%%oe_(marz$*ze#pw&2e-dor2%nt
+      - DEBUG=True
+      - CELERY_BROKER_URL=amqp://user:password@rabbitmq:5672/ocr
+      - CELERY_RESULT_BACKEND=redis://redis:6379/5
+      - REDIS_CACHE_URL=redis://redis:6379/4
+      - POSTGRES_DB=db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - DB_HOST=db
+      - DB_PORT=5432
+      - EMAIL_HOST=mail.sidramail.com
+      - EMAIL_PORT=587
+      - EMAIL_FROM=noreply@kycport.com
+      - EMAIL_USER=noreply@kycport.com
+      - EMAIL_PASSWORD=kvk@1234ldsgki
+      - SITE_URL=http://localhost
+      - OCR_KEY=fea6c5af2a8441d54adf79bf9a21ca1a
     volumes:
       - type: volume
         source: media
@@ -188,8 +305,24 @@ services:
 
   ocr-celery-beat:
     image: kyc_ocr
-    env_file:
-      - ocr.env
+    environment:
+      - SECRET_KEY=nh_zk9@rql9nsjo41n1z5(%%oe_(marz$*ze#pw&2e-dor2%nt
+      - DEBUG=True
+      - CELERY_BROKER_URL=amqp://user:password@rabbitmq:5672/ocr
+      - CELERY_RESULT_BACKEND=redis://redis:6379/5
+      - REDIS_CACHE_URL=redis://redis:6379/4
+      - POSTGRES_DB=db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - DB_HOST=db
+      - DB_PORT=5432
+      - EMAIL_HOST=mail.sidramail.com
+      - EMAIL_PORT=587
+      - EMAIL_FROM=noreply@kycport.com
+      - EMAIL_USER=noreply@kycport.com
+      - EMAIL_PASSWORD=kvk@1234ldsgki
+      - SITE_URL=http://localhost
+      - OCR_KEY=fea6c5af2a8441d54adf79bf9a21ca1a
     volumes:
       - type: volume
         source: media
@@ -202,8 +335,24 @@ services:
 
   ocr-celery-flower:
     image: kyc_ocr
-    env_file:
-      - ocr.env
+    environment:
+      - SECRET_KEY=nh_zk9@rql9nsjo41n1z5(%%oe_(marz$*ze#pw&2e-dor2%nt
+      - DEBUG=True
+      - CELERY_BROKER_URL=amqp://user:password@rabbitmq:5672/ocr
+      - CELERY_RESULT_BACKEND=redis://redis:6379/5
+      - REDIS_CACHE_URL=redis://redis:6379/4
+      - POSTGRES_DB=db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - DB_HOST=db
+      - DB_PORT=5432
+      - EMAIL_HOST=mail.sidramail.com
+      - EMAIL_PORT=587
+      - EMAIL_FROM=noreply@kycport.com
+      - EMAIL_USER=noreply@kycport.com
+      - EMAIL_PASSWORD=kvk@1234ldsgki
+      - SITE_URL=http://localhost
+      - OCR_KEY=fea6c5af2a8441d54adf79bf9a21ca1a
     volumes:
       - type: volume
         source: media
